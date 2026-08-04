@@ -1,0 +1,52 @@
+###
+GET http://localhost:3000/ferramentas
+
+###
+GET http://localhost:3000/ferramentas/1
+
+###
+GET http://localhost:3000/ferramentas/99
+
+###
+POST http://localhost:3000/ferramentas
+Content-Type: application/json
+
+{
+    "nome": "Chave",
+    "quantidade": 10
+}
+
+###
+POST http://localhost:3000/ferramentas
+Content-Type: application/json
+
+{
+    "quantidade": 10
+}
+
+###
+POST http://localhost:3000/ferramentas
+Content-Type: application/json
+
+{
+    "nome": "Chave de fenda",
+    "quantidade": "dez"
+}
+
+###
+PUT http://localhost:3000/ferramentas/3
+Content-Type: application/json
+
+{
+    "nome": "Chave de fenda",
+    "quantidade": 999
+}
+
+###
+DELETE http://localhost:3000/ferramentas/4
+
+###
+GET http://localhost:3000/ferramentas?status=em_uso
+
+###
+GET http://localhost:3000/ferramentas?status=disponivel
