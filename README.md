@@ -5,28 +5,34 @@ industrial: cadastro, listagem, atualizacao e baixa de itens.
 
 ## Tecnologias
 
-- **Backend:** Node.js, Express, TypeScript
+- **Backend:** Node.js, Express, TypeScript, Prisma ORM
+- **Banco de dados:** PostgreSQL
 - **Frontend:** React, TypeScript, Vite
 - **Controle de versao:** Git e GitHub
 
 ## Como rodar
 
-Pre-requisito: Node.js 20 ou superior.
+Pre-requisitos: Node.js 20+ e PostgreSQL instalado.
 
-Backend:
+1. Crie um banco chamado `almoxarifado` no PostgreSQL.
+2. Em `api/`, copie o arquivo `.env.example` para `.env` e ajuste a senha.
+3. Backend:
 ```
 cd api
 npm install
+npx prisma migrate dev
 npm run dev
 ```
 A API sobe em http://localhost:3000
 
-Frontend (em outro terminal):
+4. Frontend (em outro terminal):
 ```
 cd web
 npm install
 npm run dev
 ```
+Pre-requisito: Node.js 20 ou superior.
+
 A tela abre em http://localhost:5173
 
 ## Endpoints da API
