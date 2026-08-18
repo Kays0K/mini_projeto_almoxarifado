@@ -1,31 +1,30 @@
 import express from "express";
 import cors from "cors";
-import type { Ferramenta, StatusDaFerramenta } from "./tipos.js";
-import { ferramentas, gerarId } from "./dados.js";
+import type { StatusDaFerramenta } from "./tipos.js";
+import prisma from "./lib/prisma.js";
 
-const servidor = express();
+const app = express();
 
-servidor.use(cors());
-servidor.use(express.json());
+app.use(cors());
+app.use(express.json());
 
-// LISTAR AS FERRAMENTAS
-
-servidor.get("/ferramentas", (req, res) => {
+// LISTAR
+app.get("/ferramentas", async (req, res) => {
     const status = req.query.status as StatusDaFerramenta | undefined;
 
-    if (status) {
-        const filtradas = ferramentas.filter((f) => f.status === status);
-        return res.status(200).json(filtradas);
-    }
+    const ferramentas = await prisma.ferramenta.findMany({
+        where: status ? { status } : undefined,
+        orderBy: { id: "asc" },
+    });
 
     return res.status(200).json(ferramentas);
 });
 
-// BUSCAR FERRAMENTA POR ID
-
-servidor.get("/ferramentas/:id", (req, res) => {
+// BUSCAR POR ID
+app.get("/ferramentas/:id", async (req, res) => {
     const id = Number(req.params.id);
-    const ferramenta = ferramentas.find((f) => f.id === id);
+
+    const ferramenta = await prisma.ferramenta.findUnique({ where: { id } });
 
     if (!ferramenta) {
         return res.status(404).json({ erro: "Ferramenta nao encontrada" });
@@ -34,9 +33,8 @@ servidor.get("/ferramentas/:id", (req, res) => {
     return res.status(200).json(ferramenta);
 });
 
-// CADASTRAR NOVA FERRAMENTA
-
-servidor.post("/ferramentas", (req, res) => {
+// CRIAR
+app.post("/ferramentas", async (req, res) => {
     const { nome, quantidade, status } = req.body;
 
     if (typeof nome !== "string" || nome.trim() === "") {
@@ -47,55 +45,64 @@ servidor.post("/ferramentas", (req, res) => {
         return res.status(400).json({ erro: "quantidade deve ser um numero maior ou igual a zero" });
     }
 
-    const nova: Ferramenta = {
-        id: gerarId(),
-        nome: nome.trim(),
-        quantidade,
-        status: status ?? "disponivel",
-    };
+    const nova = await prisma.ferramenta.create({
+        data: {
+            nome: nome.trim(),
+            quantidade,
+            status: status ?? "disponivel",
+        },
+    });
 
-    ferramentas.push(nova);
     return res.status(201).json(nova);
 });
 
-// EDITAR FERRAMENTA EXISTENTE
-
-servidor.put("/ferramentas/:id", (req, res) => {
+// ATUALIZAR
+app.put("/ferramentas/:id", async (req, res) => {
     const id = Number(req.params.id);
-    const indice = ferramentas.findIndex((f) => f.id === id);
 
-    if (indice === -1) {
+    const existente = await prisma.ferramenta.findUnique({ where: { id } });
+
+    if (!existente) {
         return res.status(404).json({ erro: "Ferramenta nao encontrada" });
     }
 
     const { nome, quantidade, status } = req.body;
-    const atual = ferramentas[indice]!;
 
-    const atualizada: Ferramenta = {
-        id: atual.id,
-        nome: typeof nome === "string" && nome.trim() !== "" ? nome.trim() : atual.nome,
-        quantidade: typeof quantidade === "number" ? quantidade : atual.quantidade,
-        status: status ?? atual.status,
-    };
+    if (typeof nome !== "string" || nome.trim() === "") {
+        return res.status(400).json({ erro: "O campo nome e obrigatorio" });
+    }
 
-    ferramentas[indice] = atualizada;
+    if (typeof quantidade !== "number" || quantidade < 0) {
+        return res.status(400).json({ erro: "quantidade deve ser um numero maior ou igual a zero" });
+    }
+
+    const atualizada = await prisma.ferramenta.update({
+        where: { id },
+        data: {
+            nome: nome.trim(),
+            quantidade,
+            status: status ?? existente.status,
+        },
+    });
+
     return res.status(200).json(atualizada);
 });
 
-// DELETAR FERRAMENTA
-
-servidor.delete("/ferramentas/:id", (req, res) => {
+// REMOVER
+app.delete("/ferramentas/:id", async (req, res) => {
     const id = Number(req.params.id);
-    const indice = ferramentas.findIndex((f) => f.id === id);
 
-    if (indice === -1) {
+    const existente = await prisma.ferramenta.findUnique({ where: { id } });
+
+    if (!existente) {
         return res.status(404).json({ erro: "Ferramenta nao encontrada" });
     }
 
-    ferramentas.splice(indice, 1);
+    await prisma.ferramenta.delete({ where: { id } });
+
     return res.status(204).send();
 });
 
-servidor.listen(3000, () => {
+app.listen(3000, () => {
     console.log("API no ar em http://localhost:3000");
 });
