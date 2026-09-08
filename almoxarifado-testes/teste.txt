@@ -1,0 +1,117 @@
+PS D:\Trabalhos e cursos\Escola\mini_projeto_almoxarifado> mkdir almoxarifado-testes
+   
+
+    Diretório: D:\Trabalhos e cursos\Escola\mini_projeto_almoxarifado
+
+
+Mode                 LastWriteTime         Length Name                                                                                    
+----                 -------------         ------ ----                                                                                    
+d-----        08/09/2026     11:34                almoxarifado-testes                                                                     
+
+
+PS D:\Trabalhos e cursos\Escola\mini_projeto_almoxarifado> cd almoxarifado-testes
+PS D:\Trabalhos e cursos\Escola\mini_projeto_almoxarifado\almoxarifado-testes> npm init -y
+>> 
+Wrote to D:\Trabalhos e cursos\Escola\mini_projeto_almoxarifado\almoxarifado-testes\package.json:
+
+{
+  "name": "almoxarifado-testes",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
+
+
+PS D:\Trabalhos e cursos\Escola\mini_projeto_almoxarifado\almoxarifado-testes> npm install --save-dev jest
+npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+
+added 278 packages, and audited 279 packages in 22s
+
+48 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+PS D:\Trabalhos e cursos\Escola\mini_projeto_almoxarifado\almoxarifado-testes> npm test
+
+> almoxarifado-testes@1.0.0 test
+> jest
+
+ FAIL  src/estoque.test.js
+  √ libera retirada de quantidade menor que o saldo (3 ms)
+  × libera retirada da quantidade exata do saldo (2 ms)
+  √ bloqueia retirada acima do saldo
+  √ bloqueia retirada de item em manutencao
+  √ bloqueia quantidade zero ou negativa
+
+  ● libera retirada da quantidade exata do saldo
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      14 |
+      15 | test('libera retirada da quantidade exata do saldo', () => {
+    > 16 |     expect(podeRetirar(furadeira, 5)).toBe(true);
+         |                                       ^
+      17 | });
+      18 |
+      19 | test('bloqueia retirada acima do saldo', () => {
+
+      at Object.toBe (src/estoque.test.js:16:39)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 4 passed, 5 total
+Snapshots:   0 total
+Time:        6.804 s
+Ran all test suites.
+PS D:\Trabalhos e cursos\Escola\mini_projeto_almoxarifado\almoxarifado-testes> npm test
+
+> almoxarifado-testes@1.0.0 test
+> jest
+
+ PASS  src/estoque.test.js
+  √ libera retirada de quantidade menor que o saldo (4 ms)
+  √ libera retirada da quantidade exata do saldo (1 ms)
+  √ bloqueia retirada acima do saldo (1 ms)
+  √ bloqueia retirada de item em manutencao (1 ms)
+  √ bloqueia quantidade zero ou negativa (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        0.777 s, estimated 4 s
+Ran all test suites.
+PS D:\Trabalhos e cursos\Escola\mini_projeto_almoxarifado\almoxarifado-testes> npm run cobertura
+   
+> almoxarifado-testes@1.0.0 cobertura
+> jest --coverage
+
+ PASS  src/estoque.test.js
+  √ libera retirada de quantidade menor que o saldo (3 ms)
+  √ libera retirada da quantidade exata do saldo (1 ms)
+  √ bloqueia retirada acima do saldo (1 ms)
+  √ bloqueia retirada de item em manutencao (1 ms)
+  √ bloqueia quantidade zero ou negativa (1 ms)
+
+------------|---------|----------|---------|---------|-------------------
+File        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+------------|---------|----------|---------|---------|-------------------
+All files   |    90.9 |       90 |     100 |     100 |                   
+ estoque.js |    90.9 |       90 |     100 |     100 | 3                 
+------------|---------|----------|---------|---------|-------------------
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        2.429 s
+Ran all test suites.
+PS D:\Trabalhos e cursos\Escola\mini_projeto_almoxarifado\almoxarifado-testes> 
+
